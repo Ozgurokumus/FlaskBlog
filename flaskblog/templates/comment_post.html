@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class='boxy mb-5 mt-5'>
+        <div class='border-bottom mb-4'>
+            <a style="font-size: xx-large">{{post.title}}</a>
+            <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
+            <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.hour+3}}:{{post.date_posted.minute}} , {{ post.date_posted.strftime('%d-%m-%Y')}}</p>
+        </div>
+        {% for para in post.content.split('\n') %}
+            <p>{{ para }}</p>
+        {% endfor %}        
+        <h4 align='right'>Posted by ~ <img src="{{ url_for('static',filename='profile_pics/' + post.author.image_file) }}" style="width: 50px; border-radius: 10px"> {{post.author.username}}</h4>
+    </div>
+    {% for comment in post.comments %}
+    <div class='boxy mb-1 mt-1'>
+      <p>{{comment.content}}</p>
+      <h6 class='text-muted' align='right'>{{comment.date_posted.hour+3}}:{{comment.date_posted.minute}} , {{ comment.date_posted.strftime('%d-%m-%Y')}}</h6>
+      <h6 align='right'>Commented by ~ <img src="{{ url_for('static',filename='profile_pics/' + comment.commenter.image_file) }}" style="width: 50px; border-radius: 10px"> {{comment.commenter.username}}</h6>
+    </div>
+    {% endfor %}
+    <div class='boxy mt-5 mb-5' >
+        <form action="" method ="post" class = col-6>
+            {{ form.hidden_tag() }}
+            <legend class='border-bottom mb-4'>New Comment</legend>
+            <div class='form-group'>
+            {{ form.content.label(class='form-control-label') }}
+            {% if form.content.errors %}
+                {{ form.content(class='form-control form-control-lg is-invalid') }}
+                <div class='invalid-feedback'>
+                    {% for error in form.content.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>   
+            {% else %}         
+                {{ form.content(class='form-control form-control-lg') }}
+            {% endif %}
+            </div>      
+            <div class='form-group'>
+            {{ form.submit(class='btn btn-outline-info') }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+

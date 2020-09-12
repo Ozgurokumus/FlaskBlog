@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class='boxy' style="margin-left: 300px; margin-right: 300px; min-width: 400px;">
+    <form action="" method ="post">
+      {{ form.hidden_tag() }}
+      <div class='form-group'>
+          {{ form.category.label(class='form-control-label') }}
+          {% if form.category.errors %}
+              {{ form.category(class='form-control form-control-lg is-invalid') }}
+              <div class='invalid-feedback'>
+                  {% for error in form.category.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>   
+          {% else %}         
+              {{ form.category(class='form-control form-control-lg') }}
+          {% endif %}
+      </div>
+      <div class='form-group'>
+        {{ form.submit(class='btn btn-outline-info') }}
+      </div>
+    <form action=""></form>
+  </div>
+
+  {% for post in posts %}
+    <div class='boxy mb-5 mt-5'>
+      <div class='border-bottom mb-4'>
+        <a href="{{url_for('post', post_id=post.id)}}" style="font-size: xx-large">{{post.title}}</a>
+        <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
+        <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.hour+3}}:{{post.date_posted.minute}} , {{ post.date_posted.strftime('%d-%m-%Y')}}</p>
+      </div>
+      {% for para in post.content.split('\n') %}
+        <p>{{ para }}</p>
+      {% endfor %}
+      <div style="overflow: hidden;">
+        <h4 style="float: left; margin-top: 10px;"><i class="fas fa-comments"></i> {{ post.comments.all()|length }}</h4>
+        <h4 style='float: right;'>Posted by ~ <img src="{{ url_for('static',filename='profile_pics/' + post.author.image_file) }}" style="width: 50px; border-radius: 10px"> {{post.author.username}}</h4>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock content %}
+
