@@ -27,7 +27,7 @@
       <div class='border-bottom mb-4'>
         <a href="{{url_for('post', post_id=post.id)}}" style="font-size: xx-large">{{post.title}}</a>
         <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
-        <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.hour+3}}:{{post.date_posted.minute}} , {{ post.date_posted.strftime('%d-%m-%Y')}}</p>
+        <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.strftime("%H:%M , %d-%m-%Y")}}</p>
       </div>
       {% for para in post.content.split('\n') %}
         <p>{{ para }}</p>

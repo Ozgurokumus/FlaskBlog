@@ -48,9 +48,9 @@ def catch_log():
     date = datetime.utcfromtimestamp(unix_time+10800).strftime('%Y-%m-%d %H:%M:%S')
     with open("logs.txt","a") as f:
         try:
-            f.write(str({"User":current_user.username, "ip":ip, "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
+            f.write(str({"User":current_user.username, "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
         except:
-            f.write(str({"User":'?', "ip":ip, "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
+            f.write(str({"User":'?', "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
 
 @app.route("/")
 @app.route("/home", methods =["GET","POST"])
@@ -184,8 +184,12 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
+
+    for comment in post.comments.all():
+        db.session.delete(comment)
     db.session.delete(post)
     db.session.commit()
+
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('home'))
 
@@ -206,6 +210,19 @@ def comment_post(post_id):
 
     return render_template('comment_post.html', title='Comment Post', form=form, post=post)
 
+@app.route("/post/<int:comment_id>/comment-delete", methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.commenter != current_user:
+        abort(403)
+
+    post_id = comment.commented_post.id
+    db.session.delete(comment)
+    db.session.commit()
+
+    flash('Your comment has been deleted!', 'success')
+    return redirect(url_for('post', post_id=post_id))
 #-#-# APIs #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 @app.route("/api/post", methods=['GET','POST'])

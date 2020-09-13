@@ -34,10 +34,13 @@ class Post(db.Model):
     author_username:str
     content:str
 
+    def get_time():
+        return (datetime.utcnow() + timedelta(hours=3))
+    
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String, nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default=get_time)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     author_username = db.Column(db.Text, nullable=False)
@@ -50,9 +53,16 @@ class Post(db.Model):
 
 @dataclass
 class Comment(db.Model):
+
+    def get_time():
+        return (datetime.utcnow() + timedelta(hours=3))
+
     id = db.Column(db.Integer, primary_key=True)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default=get_time)
     content = db.Column(db.Text, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+
+    def __repr__(self):
+        return f"Comment('{self.id}', '{self.content}', '{self.date_posted}', '{self.commenter.username}')"
