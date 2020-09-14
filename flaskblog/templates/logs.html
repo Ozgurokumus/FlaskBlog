@@ -22,10 +22,8 @@
     <thead>
       <tr>
         <th class="th-sm">User</th>
-        <th class="th-sm">City</th>
         <th class="th-sm">Browser</th>
         <th class="th-sm">Platform</th>
-        <th class="th-sm">Unix Time</th>
         <th class="th-sm">Date</th>
       </tr>
     </thead>
@@ -33,10 +31,8 @@
       {% for log in logs %}
           <tr>
             <td>{{log['User']}}</td>
-            <td>{{log['City']}}</td>
             <td>{{log['Browser']}}</td>
             <td>{{log['Platform']}}</td>
-            <td>{{log['Unix time']}}</td>
             <td>{{log['Date']}}</td>
           </tr>
       {% endfor %}

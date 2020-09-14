@@ -1,23 +1,45 @@
 {% extends "layout.html" %}
-{% block content %}
-    <div class='boxy mb-5 mt-5'>
-        <div class='border-bottom mb-4'>
-            <a style="font-size: xx-large">{{post.title}}</a>
-            <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
-            <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.strftime("%H:%M , %d-%m-%Y")}}</p>
-        </div>
-        {% for para in post.content.split('\n') %}
-            <p>{{ para }}</p>
-        {% endfor %}        
-        <h4 align='right'>Posted by ~ <img src="{{ url_for('static',filename='profile_pics/' + post.author.image_file) }}" style="width: 50px; border-radius: 10px"> {{post.author.username}}</h4>
-    </div>
-    {% for comment in post.comments %}
-    <div class='boxy mb-1 mt-1'>
+
+{% macro write(comment) -%}
+  {%- if not comment.parent.all() -%}
+    <div class='comment'>
+      <div style="overflow: hidden;">
+          <h5 style="float: left;"><img src="{{ url_for('static',filename='profile_pics/' + comment.commenter.image_file) }}" style="width: 40px; border-radius: 20px"> {{comment.commenter.username}}</h6>
+          <h6 class='text-muted' style="margin-top: 12px; font-size: small; float: left;"> ~ {{comment.date_posted.strftime("%H:%M , %d-%m-%Y")}}</h6>  
+          {% if comment.commenter == current_user %}
+            <!-- <button type="button" class="btn btn-danger btn-sm" style="margin: 5px;" data-toggle="modal" data-target="#deleteCommentModal{{comment_issd}}">Delete</button> -->
+          {% endif %}  
+      </div>
       <p>{{comment.content}}</p>
-      <h6 class='text-muted' align='right'>{{comment.date_posted.strftime("%H:%M , %d-%m-%Y")}}</h6>
-      <h6 align='right'>Commented by ~ <img src="{{ url_for('static',filename='profile_pics/' + comment.commenter.image_file) }}" style="width: 30px; border-radius: 20px"> {{comment.commenter.username}}</h6>
+      {%- if comment.comments -%}
+        {%- for comment in comment.comments.all() -%}
+            {{- write_child(comment) -}}
+        {%- endfor -%}
+      {%- endif -%}
     </div>
-    {% endfor %}
+  {%- endif %}
+{%- endmacro %}
+
+{% macro write_child(comment) -%}
+  <div class='comment'>
+    <div style="overflow: hidden;">
+        <h5 style="float: left;"><img src="{{ url_for('static',filename='profile_pics/' + comment.commenter.image_file) }}" style="width: 40px; border-radius: 20px"> {{comment.commenter.username}}</h6>
+        <h6 class='text-muted' style="margin-top: 12px; font-size: small; float: left;"> ~ {{comment.date_posted.strftime("%H:%M , %d-%m-%Y")}}</h6> 
+        {% if comment.commenter == current_user %}
+          <!-- <button type="button" class="btn btn-danger btn-sm" style="margin: 5px;" data-toggle="modal" data-target="#deleteCommentModal{{comment_issd}}">Delete</button> -->
+        {% endif %}   
+    </div>
+    <p>{{comment.content}}</p>
+    {%- if comment.comments -%}
+      {%- for comment in comment.comments.all() -%}
+          {{- write_child(comment) -}}
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+{%- endmacro %}
+
+{% block content %}
+
     <div class='boxy mt-5 mb-5' >
         <form action="" method ="post" class = col-6>
             {{ form.hidden_tag() }}
@@ -40,5 +62,21 @@
             </div>
         </form>
     </div>
+
+    <div class='boxy mb-5 mt-5'>
+        <div class='border-bottom mb-4'>
+            <a style="font-size: xx-large">{{post.title}}</a>
+            <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
+            <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.strftime("%H:%M , %d-%m-%Y")}}</p>
+        </div>
+        {% for para in post.content.split('\n') %}
+            <p>{{ para }}</p>
+        {% endfor %}        
+        <h4 align='right'>Posted by ~ <img src="{{ url_for('static',filename='profile_pics/' + post.author.image_file) }}" style="width: 50px; border-radius: 10px"> {{post.author.username}}</h4>
+        {% for comment in post.comments %}
+            {{ write(comment) }}
+        {% endfor %}
+    </div>
+
 {% endblock content %}
 

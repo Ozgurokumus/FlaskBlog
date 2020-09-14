@@ -15,6 +15,7 @@ import time
 import os
 
 db.create_all()
+
 # Updates profile picture
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -40,17 +41,14 @@ def catch_log():
         url = 'https://ipinfo.io/' + ip + '/json'
     res = urlopen(url)
     data = json.load(res)
-    try:
-        city = data['city']
-    except:
-        city = 'Unknown'
 
     date = datetime.utcfromtimestamp(unix_time+10800).strftime('%Y-%m-%d %H:%M:%S')
     with open("logs.txt","a") as f:
         try:
-            f.write(str({"User":current_user.username, "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
+            f.write(str({"User":current_user.username, "Browser":browser, "Platform":platform, "Date":date})+"\n")
         except:
-            f.write(str({"User":'?', "City":city, "Unix time":unix_time, "Browser":browser, "Platform":platform, "Date":date})+"\n")
+            f.write(str({"User":'?', "Browser":browser, "Platform":platform, "Date":date})+"\n")
+
 
 @app.route("/")
 @app.route("/home", methods =["GET","POST"])
@@ -80,6 +78,9 @@ def logs():
 
 @app.route("/login", methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     form = LoginForm()
 
     error = None
@@ -100,6 +101,8 @@ def login():
 
 @app.route("/signup", methods=['GET','POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -210,14 +213,36 @@ def comment_post(post_id):
 
     return render_template('comment_post.html', title='Comment Post', form=form, post=post)
 
-@app.route("/post/<int:comment_id>/comment-delete", methods=['POST'])
+@app.route("/post/<int:post_id>/<int:comment_id>/comment", methods=['GET','POST'])
 @login_required
-def delete_comment(comment_id):
+def comment_comment(post_id,comment_id):
+
+    post = Post.query.get_or_404(post_id)
+    form = CommentForm()
+
+    if form.validate_on_submit():
+        comment = Comment.query.get(comment_id)
+        reply = Comment(content=form.content.data, commented_post=Post.query.get(post_id), commenter=current_user)
+        comment.comments.append(reply)
+        db.session.commit()
+
+        flash('Your comment have been created!', 'success')
+        
+        return redirect(url_for('post', post_id=post.id))
+
+    return render_template('comment_comment.html', title='Comment Post', form=form, post=post, comment_id=comment_id)
+
+@app.route("/post/<int:post_id>/<int:comment_id>/comment-delete", methods=['POST','GET'])
+@login_required
+def delete_comment(post_id, comment_id):
     comment = Comment.query.get_or_404(comment_id)
+    
     if comment.commenter != current_user:
         abort(403)
 
-    post_id = comment.commented_post.id
+    for reply in comment.comments.all():
+        db.session.delete(reply)
+
     db.session.delete(comment)
     db.session.commit()
 

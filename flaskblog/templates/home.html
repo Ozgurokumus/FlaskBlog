@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-  <div class='boxy' style="margin-left: 300px; margin-right: 300px; min-width: 400px;">
+  <div class='categoryBoxy' style="width: 350px;">
     <form action="" method ="post">
       {{ form.hidden_tag() }}
       <div class='form-group'>
@@ -21,7 +21,6 @@
       </div>
     <form action=""></form>
   </div>
-
   {% for post in posts %}
     <div class='boxy mb-5 mt-5'>
       <div class='border-bottom mb-4'>

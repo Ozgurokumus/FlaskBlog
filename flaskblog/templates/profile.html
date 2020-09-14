@@ -1,17 +1,19 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class='row mt-5 boxy'>
-        <div class='col-2 mt-3'>
-            <img style='border-radius: 10px; width: 125px;' src='{{ image_file }}'>
-        </div>
-        <div class='col-10 mt-3'>
-            <h2 >{{current_user.username}}</h2>
-            <p><i class="fab fa-facebook"></i> {{current_user.facebook}}</p>
-            <p><i class="fab fa-twitter"></i> {{current_user.twitter}}</p>
+    <div class=' mt-5 boxy'>
+        <div style="overflow: hidden;">
+            <div class='m-3' style="float: left;">
+                <img style='border-radius: 10px; width: 125px;' src='{{ image_file }}'>
+            </div>
+            <div class='m-3'>
+                <h2 >{{current_user.username}}</h2>
+                <p><i class="fab fa-facebook"></i> {{current_user.facebook}}</p>
+                <p><i class="fab fa-twitter"></i> {{current_user.twitter}}</p>
 
+            </div>
         </div>
 
-        <form action="" method ="post" class = 'col-6 mt-5' enctype="multipart/form-data">
+        <form action="" method ="post" class = ' mt-5' enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class='form-group '>
                 <legend class='border-bottom mb-4'>Update Profile Info</legend>

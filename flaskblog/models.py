@@ -51,18 +51,39 @@ class Post(db.Model):
     def __repr__(self):
         return f"Post('{self.title}', '{self.author.username}', '{self.date_posted}')"
 
+
+
+
+
 @dataclass
 class Comment(db.Model):
 
     def get_time():
         return (datetime.utcnow() + timedelta(hours=3))
 
+    comment_tree = db.Table(
+        'comment_tree', 
+        db.Column('parent_id', db.Integer, db.ForeignKey('comment.id')),
+        db.Column('children_id', db.Integer, db.ForeignKey('comment.id'))
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=get_time)
     content = db.Column(db.Text, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    
+    parent = db.relationship(
+        'Comment', 
+        secondary=comment_tree,
+        primaryjoin=(comment_tree.c.parent_id == id),
+        secondaryjoin=(comment_tree.c.children_id == id),
+        backref=db.backref('comments', lazy='dynamic'),
+        lazy='dynamic'
+    )    
 
 
     def __repr__(self):
         return f"Comment('{self.id}', '{self.content}', '{self.date_posted}', '{self.commenter.username}')"
+
+
