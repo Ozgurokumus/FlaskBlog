@@ -14,6 +14,7 @@ import json
 import time
 import os
 
+db.create_all()
 
 # Updates profile picture
 def save_picture(form_picture):
