@@ -22,8 +22,8 @@
     <form action=""></form>
   </div>
   {% for post in posts %}
-    <div class='boxy mb-5 mt-5'>
-      <div class='border-bottom mb-4'>
+    <div class='boxy mb-4 mt-4'>
+      <div class='border-bottom'>
         <a href="{{url_for('post', post_id=post.id)}}" style="font-size: xx-large">{{post.title}}</a>
         <p class='text-muted' style="display: inline;">  ~  {{post.category}}</p>
         <p class="text-muted" style="display: inline;">  ~  {{post.date_posted.strftime("%H:%M , %d-%m-%Y")}}</p>

@@ -14,7 +14,6 @@ import json
 import time
 import os
 
-db.create_all()
 
 # Updates profile picture
 def save_picture(form_picture):
@@ -31,23 +30,14 @@ def save_picture(form_picture):
 
 # Saves current user information 
 def catch_log():
-    ip = str(request.remote_addr)
     unix_time = round(time.time())
-    browser = request.user_agent.browser
-    platform = request.user_agent.platform
-    if ip == '':
-        url = 'https://ipinfo.io/json'
-    else:
-        url = 'https://ipinfo.io/' + ip + '/json'
-    res = urlopen(url)
-    data = json.load(res)
+    date = datetime.utcfromtimestamp(unix_time+10800).strftime('%H:%M:%S ~ %d-%m-%Y')
 
-    date = datetime.utcfromtimestamp(unix_time+10800).strftime('%Y-%m-%d %H:%M:%S')
     with open("logs.txt","a") as f:
-        try:
-            f.write(str({"User":current_user.username, "Browser":browser, "Platform":platform, "Date":date})+"\n")
-        except:
-            f.write(str({"User":'?', "Browser":browser, "Platform":platform, "Date":date})+"\n")
+        if current_user.is_authenticated:
+            f.write(str({"User":current_user.username, "Date":date})+"\n")
+        else:
+            f.write(str({"User":'?', "Date":date})+"\n")
 
 
 @app.route("/")

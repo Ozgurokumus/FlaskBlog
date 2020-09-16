@@ -1,10 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class='boxy mt-5'>
-    <div class="container">
-      <form action="" method ="post" class = col-6>
+<div class='generalBoxy mt-3'>
+    <form action="" method ="post">
         {{ form.hidden_tag() }}
-        <fieldset class='form-group '>
+        <fieldset class='form-group'>
             <legend class='border-bottom mb-4'>New Post</legend>
             <div class='form-group'>
                 {{ form.title.label(class='form-control-label') }}
@@ -49,10 +48,9 @@
         <div class='form-group'>
             {{ form.submit(class='btn btn-outline-info') }}
         </div>
-      </form>
-      {% if error %}
+    </form>
+    {% if error %}
         <p class="error"><strong>Error:</strong>{{ error }}</p>
-      {% endif %}
-    </div>
+    {% endif %}
 </div>
 {% endblock content %}

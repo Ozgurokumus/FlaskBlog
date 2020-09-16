@@ -49,7 +49,7 @@ class PostForm(FlaskForm):
     submit = SubmitField('Post')
 
 class CommentForm(FlaskForm):
-    content = TextAreaField('Content', validators=[DataRequired(), Length(3,800)])
+    content = TextAreaField('Content', validators=[DataRequired(), Length(2,800)])
     submit = SubmitField('Comment')
 
 class CategoryForm(FlaskForm):
