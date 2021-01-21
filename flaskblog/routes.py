@@ -244,6 +244,8 @@ def delete_comment(post_id, comment_id):
 @app.route("/api/posts", methods=['GET','POST'])
 def posts_api():
     posts = Post.query.all()
+    for i in range(len(posts)):
+        posts[i] = {"author_username":posts[i].author_username,"id":posts[i].id,"title":posts[i].title}
     return jsonify({'posts':posts})
 
 @app.route("/api/posts/<int:post_id>", methods=['GET','POST'])
