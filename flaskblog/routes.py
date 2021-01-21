@@ -241,34 +241,34 @@ def delete_comment(post_id, comment_id):
     return redirect(url_for('post', post_id=post_id))
 #-#-# APIs #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
-@app.route("/api/post", methods=['GET','POST'])
-def post_api():
+@app.route("/api/posts", methods=['GET','POST'])
+def posts_api():
     posts = Post.query.all()
     return jsonify({'posts':posts})
 
-@app.route("/api/post/<int:post_id>", methods=['GET','POST'])
+@app.route("/api/posts/<int:post_id>", methods=['GET','POST'])
 def post_id_api(post_id):
     post = Post.query.get_or_404(post_id)
     return jsonify({'post':post})
 
-@app.route("/api/category", methods=['GET','POST'])
-def category_api():
+@app.route("/api/categories", methods=['GET','POST'])
+def categories_api():
     categories = ['General','Sports','Gaming','News','TV','Memes','Travel','Music, Art & Design']
     return jsonify({'categories':categories})
 
-@app.route("/api/category/<string:category>", methods=['GET','POST'])
+@app.route("/api/categories/<string:category>", methods=['GET','POST'])
 def selected_category_api(category):
     posts = Post.query.filter_by(category=category).all()
     return jsonify({'posts':posts})
 
-@app.route("/api/user", methods=['GET','POST'])
+@app.route("/api/users", methods=['GET','POST'])
 def users_api():
     users = User.query.filter_by().all()
     for i in range(len(users)):
         users[i] = users[i].username
     return jsonify({'users':users})
                                         
-@app.route("/api/user/<string:username>", methods=['GET','POST'])
+@app.route("/api/users/<string:username>", methods=['GET','POST'])
 def user_api(username):
     user = User.query.filter_by(username=username).first()
     posts = user.posts.all()
