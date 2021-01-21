@@ -41,7 +41,7 @@ def catch_log():
             f.write(str({"User":'?', "Date":date})+"\n")
 
 
-@app.route("/")
+@app.route("/", methods =["GET","POST"])
 @app.route("/home", methods =["GET","POST"])
 def home() :
     catch_log()
