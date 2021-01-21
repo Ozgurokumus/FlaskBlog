@@ -261,6 +261,13 @@ def selected_category_api(category):
     posts = Post.query.filter_by(category=category).all()
     return jsonify({'posts':posts})
 
+@app.route("/api/user", methods=['GET','POST'])
+def users_api():
+    users = User.query.filter_by().all()
+    for i in range(len(users)):
+        users[i] = users[i].username
+    return jsonify({'users':users})
+                                        
 @app.route("/api/user/<string:username>", methods=['GET','POST'])
 def user_api(username):
     user = User.query.filter_by(username=username).first()
