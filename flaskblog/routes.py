@@ -273,6 +273,9 @@ def users_api():
 @app.route("/api/users/<string:username>", methods=['GET','POST'])
 def user_api(username):
     user = User.query.get_or_404(username)
-    posts = user.posts.all()
-    return jsonify({'user':user},{'posts':posts})
+    if user==None:
+        return abort(404)
+    else:
+        posts = user.posts.all()
+        return jsonify({'user':user},{'posts':posts})
 
