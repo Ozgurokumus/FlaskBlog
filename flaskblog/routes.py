@@ -272,7 +272,7 @@ def users_api():
                                         
 @app.route("/api/users/<string:username>", methods=['GET','POST'])
 def user_api(username):
-    user = User.query.get_or_404(username)
+    user = User.query.filter_by(username=username).first()
     if user==None:
         return abort(404)
     else:
